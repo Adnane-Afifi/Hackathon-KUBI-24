@@ -2,35 +2,30 @@
 
 <main class="container mt-5">
   <section class="text-center">
-    <h1>Bienvenue sur Notre Site</h1>
-    <p>Découvrez nos produits et services exceptionnels.</p>
-    <a href="/produits" class="btn btn-primary">Voir les Produits</a>
+    <h1>Bienvenue sur l'Administration des Raspberry Pi</h1>
+    <p>Connectez-vous pour gérer vos dispositifs Raspberry Pi.</p>
+    {{#error}}
+      <div class="alert alert-danger">{{error}}</div>
+    {{/error}}
   </section>
 
-  <section class="features mt-5">
-    <h2 class="text-center">Nos Fonctionnalités</h2>
-    <div class="row">
-      <div class="col-md-4 text-center">
-        <img src="path/to/image1.jpg" alt="Fonctionnalité 1" class="img-fluid mb-3">
-        <h3>Fonctionnalité 1</h3>
-        <p>Description de la fonctionnalité 1.</p>
-      </div>
-      <div class="col-md-4 text-center">
-        <img src="path/to/image2.jpg" alt="Fonctionnalité 2" class="img-fluid mb-3">
-        <h3>Fonctionnalité 2</h3>
-        <p>Description de la fonctionnalité 2.</p>
-      </div>
-      <div class="col-md-4 text-center">
-        <img src="path/to/image3.jpg" alt="Fonctionnalité 3" class="img-fluid mb-3">
-        <h3>Fonctionnalité 3</h3>
-        <p>Description de la fonctionnalité 3.</p>
+  <section class="login mt-5">
+    <h2 class="text-center">Portail d'Authentification</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form action="/login" method="post">
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
+        </form>
       </div>
     </div>
-  </section>
-
-  <section class="about mt-5">
-    <h2 class="text-center">À Propos de Nous</h2>
-    <p class="text-center">Nous sommes une entreprise dédiée à fournir les meilleurs produits.</p>
   </section>
 </main>
 
