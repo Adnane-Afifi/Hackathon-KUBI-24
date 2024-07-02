@@ -13,6 +13,7 @@ const model = require('../Model/model'); // Charger les fonctions du modèle
 //----------------Configuration of the server ----------------------
 const app = express();
 const port = process.env.PORT || 4000;
+app.use(express.static(path.join(__dirname, '../CSS')));
 app.use(express.static(path.join(__dirname, '../public')));
 app.engine('html', mustache());
 app.set('view engine', 'html');
@@ -41,6 +42,8 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 // Route pour la page d'accueil (page de connexion)
 app.get("/", (req, res) => {
   res.render("homepage", { title: "Home" });
@@ -61,11 +64,39 @@ app.post("/login", (req, res) => {
 // Route pour le tableau de bord
 app.get("/dashboard", (req, res) => {
   if (req.session.admin) {
-    res.render("dashboard", { title: "Dashboard", username: req.session.admin.username });
+    const raspberryPis = [
+      {
+        ip: '192.168.1.101',
+        status: 'Active',
+        isActive: true,
+        isInactive: false,
+        image: '/images/raspberry_pi.png'
+      },
+      {
+        ip: '192.168.1.102',
+        status: 'Inactive',
+        isActive: false,
+        isInactive: true,
+        image: '/images/raspberry_pi.png'
+      },
+      {
+        ip: '192.168.1.103',
+        status: 'Active',
+        isActive: true,
+        isInactive: false,
+        image: '/images/raspberry_pi.png'
+      }
+    ];
+    res.render("dashboard", { 
+      title: "Dashboard", 
+      username: req.session.admin.username,
+      raspberryPis: raspberryPis // Passez les données des Raspberry Pi à la vue
+    });
   } else {
     res.redirect("/");
   }
 });
+
 
 // Route pour la configuration du Raspberry Pi
 app.get("/configure", (req, res) => {

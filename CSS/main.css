@@ -1,0 +1,61 @@
+body {
+    background-color: #f8f9fa;
+  }
+  
+  .login-container {
+    margin-top: 100px;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: none;
+  }
+  
+  .card-header {
+    background-color: #ff4081;
+    color: white;
+  }
+  
+  .btn-primary {
+    background-color: #ff4081;
+    border-color: #ff4081;
+  }
+  
+  .btn-primary:hover {
+    background-color: #d63073;
+    border-color: #d63073;
+  }
+  
+  .navbar-brand img {
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+  }
+  
+  .alert {
+    margin-top: 10px;
+  }
+  
+  .status-active {
+    color: green;
+  }
+  
+  .status-inactive {
+    color: red;
+  }
+  
+  .card-img-top {
+    width: 100px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .dashboard-title {
+    margin-top: 60px;
+  }
+  

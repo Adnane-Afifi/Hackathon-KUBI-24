@@ -2,10 +2,30 @@
 
 <main class="container mt-5">
   <section class="text-center">
-    <h1>Tableau de Bord</h1>
+    <h1 class="dashboard-title">Tableau de Bord</h1>
     <p>Bienvenue, {{username}} !</p>
     <a href="/configure" class="btn btn-primary">Configurer un Raspberry Pi</a>
     <a href="/logout" class="btn btn-secondary">Déconnexion</a>
+  </section>
+
+  <section class="mt-5">
+    <div class="row">
+      {{#raspberryPis}}
+      <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+        <div class="card">
+          <img class="card-img-top" src="{{image}}" alt="Raspberry Pi">
+          <div class="card-body">
+            <h5 class="card-title">Raspberry Pi</h5>
+            <p class="card-text"><strong>Adresse IP:</strong> {{ip}}</p>
+            <p class="card-text"><strong>État:</strong> 
+              {{#isActive}}<span class="status-active">{{status}}</span>{{/isActive}}
+              {{#isInactive}}<span class="status-inactive">{{status}}</span>{{/isInactive}}
+            </p>
+          </div>
+        </div>
+      </div>
+      {{/raspberryPis}}
+    </div>
   </section>
 </main>
 

@@ -1,32 +1,31 @@
 {{> Partials/header}}
 
-<main class="container mt-5">
-  <section class="text-center">
-    <h1>Bienvenue sur l'Administration des Raspberry Pi</h1>
-    <p>Connectez-vous pour gérer vos dispositifs Raspberry Pi.</p>
-    {{#error}}
-      <div class="alert alert-danger">{{error}}</div>
-    {{/error}}
-  </section>
-
-  <section class="login mt-5">
-    <h2 class="text-center">Portail d'Authentification</h2>
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <form action="/login" method="post">
-          <div class="form-group">
-            <label for="username">Nom d'utilisateur</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
-        </form>
+<main class="container login-container">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7 col-sm-9 col-11">
+      <div class="card">
+        <div class="card-header text-center">
+          <h2>Portail d'Authentification</h2>
+        </div>
+        <div class="card-body">
+          <form action="/login" method="post">
+            <div class="form-group">
+              <label for="username">Nom d'utilisateur</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Mot de passe</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            {{#error}}
+              <div class="alert alert-danger">{{error}}</div>
+            {{/error}}
+            <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
+          </form>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 </main>
 
 {{> Partials/footer}}
