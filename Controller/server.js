@@ -42,8 +42,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 // Route pour la page d'accueil (page de connexion)
 app.get("/", (req, res) => {
   res.render("homepage", { title: "Home" });
@@ -97,11 +95,13 @@ app.get("/dashboard", (req, res) => {
   }
 });
 
-
-// Route pour la configuration du Raspberry Pi
-app.get("/configure", (req, res) => {
+// Route pour la configuration d'un Raspberry Pi
+app.get("/configure/:ip", (req, res) => {
   if (req.session.admin) {
-    res.render("configure", { title: "Configure Raspberry Pi" });
+    res.render("configure", { 
+      title: "Configure Raspberry Pi",
+      ip: req.params.ip
+    });
   } else {
     res.redirect("/");
   }
@@ -134,6 +134,18 @@ app.post("/configure", async (req, res) => {
     res.render("result", { title: "Configuration Result", output: result.stdout, error: result.stderr });
   } catch (error) {
     res.render("result", { title: "Configuration Result", output: "", error: error.message });
+  }
+});
+
+// Route pour gérer un Raspberry Pi
+app.get("/manage/:ip", (req, res) => {
+  if (req.session.admin) {
+    res.render("manage", { 
+      title: "Manage Raspberry Pi",
+      ip: req.params.ip
+    });
+  } else {
+    res.redirect("/");
   }
 });
 
