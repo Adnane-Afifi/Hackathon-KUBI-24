@@ -95,7 +95,18 @@ app.get("/dashboard", (req, res) => {
   }
 });
 
-// Route pour la configuration d'un Raspberry Pi
+// Route pour la configuration d'un nouveau Raspberry Pi
+app.get("/configure", (req, res) => {
+  if (req.session.admin) {
+    res.render("configure_new", { 
+      title: "Configure New Raspberry Pi"
+    });
+  } else {
+    res.redirect("/");
+  }
+});
+
+// Route pour la configuration d'un Raspberry Pi existant
 app.get("/configure/:ip", (req, res) => {
   if (req.session.admin) {
     res.render("configure", { 
@@ -106,7 +117,7 @@ app.get("/configure/:ip", (req, res) => {
     res.redirect("/");
   }
 });
-
+// Route pour le formulaire de configuration d'un  nouveau Raspberry Pi 
 app.post("/configure", async (req, res) => {
   if (!req.session.admin) {
     return res.redirect("/");
@@ -136,6 +147,8 @@ app.post("/configure", async (req, res) => {
     res.render("result", { title: "Configuration Result", output: "", error: error.message });
   }
 });
+
+
 
 // Route pour gérer un Raspberry Pi
 app.get("/manage/:ip", (req, res) => {
