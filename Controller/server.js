@@ -199,6 +199,22 @@ app.get("/manage/:id", (req, res) => {
   }
 });
 
+// Route pour supprimer un Raspberry Pi
+app.post("/delete/:id", (req, res) => {
+  if (req.session.admin) {
+    let raspberryPis = readRaspberryPis();
+    raspberryPis = raspberryPis.filter(pi => pi.id !== parseInt(req.params.id));
+
+    // Écrire les Raspberry Pi mis à jour dans le fichier JSON
+    writeRaspberryPis(raspberryPis);
+
+    // Rediriger vers le tableau de bord
+    res.redirect("/dashboard");
+  } else {
+    res.redirect("/");
+  }
+});
+
 // Route pour la déconnexion
 app.get("/logout", (req, res) => {
   req.session.destroy();

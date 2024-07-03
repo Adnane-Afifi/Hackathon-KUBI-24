@@ -22,6 +22,7 @@
             </p>
             <a href="/configure/{{id}}" class="btn btn-primary">Configurer</a>
             <a href="/manage/{{id}}" class="btn btn-secondary">Gérer</a>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" data-id="{{id}}">Supprimer</button>
           </div>
         </div>
       </div>
@@ -31,3 +32,36 @@
 </main>
 
 {{> Partials/footer}}
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer ce Raspberry Pi ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <form id="deleteForm" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('#deleteModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Bouton qui a déclenché le modal
+    var id = button.data('id'); // Extraire les informations des attributs de données
+    var modal = $(this);
+    var form = modal.find('#deleteForm');
+    form.attr('action', '/delete/' + id); // Mettre à jour l'action du formulaire
+  });
+</script>

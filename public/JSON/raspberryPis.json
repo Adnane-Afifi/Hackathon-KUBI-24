@@ -1,33 +1,26 @@
 [
-    {
-      "id": 1,
-      "ip": "192.168.1.101",
-      "status": "Inactive",
-      "image": "/images/raspberry_pi.png"
-    },
-    {
-      "id": 2,
-      "ip": "192.168.1.102",
-      "status": "Inactive",
-      "image": "/images/raspberry_pi.png"
-    },
-    {
-      "id": 3,
-      "ip": "192.168.1.103",
-      "status": "Active",
-      "image": "/images/raspberry_pi.png"
-    },
-    {
-      "id": 4,
-      "ip": "172.20.10.2",
-      "status": "Pending",
-      "image": "/images/raspberry_pi.png"
-    },
-    {
-      "id": 5,
-      "ip": "172.20.10.5",
-      "status": "Pending",
-      "image": "/images/raspberry_pi.png"
-    }
-  ]
-  
+  {
+    "id": 1,
+    "ip": "192.168.1.101",
+    "status": "Inactive",
+    "image": "/images/raspberry_pi.png"
+  },
+  {
+    "id": 2,
+    "ip": "192.168.1.102",
+    "status": "Inactive",
+    "image": "/images/raspberry_pi.png"
+  },
+  {
+    "id": 3,
+    "ip": "192.168.1.103",
+    "status": "Active",
+    "image": "/images/raspberry_pi.png"
+  },
+  {
+    "id": 4,
+    "ip": "172.20.10.2",
+    "status": "Pending",
+    "image": "/images/raspberry_pi.png"
+  }
+]
