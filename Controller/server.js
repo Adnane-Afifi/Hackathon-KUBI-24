@@ -8,7 +8,9 @@ const bodyParser = require('body-parser');
 const { NodeSSH } = require('node-ssh');
 const session = require('express-session');
 const path = require('path');
-const model = require('../Model/model'); // Charger les fonctions du modèle
+const model = require('../Model/model'); 
+const fs = require('fs');
+const ping = require('ping'); 
 
 //----------------Configuration of the server ----------------------
 const app = express();
@@ -38,7 +40,7 @@ app.use((req, res, next) => {
   res.locals.path = req.path;
   res.locals.activeHome = req.path === '/' ? 'active' : '';
   res.locals.activeDashboard = req.path === '/dashboard' ? 'active' : '';
-  res.locals.activeConfigure = req.path === '/configure' ? 'active' : '';
+  res.locals.activeConfigure = req.path.startsWith('/configure') ? 'active' : '';
   next();
 });
 
@@ -59,37 +61,61 @@ app.post("/login", (req, res) => {
   }
 });
 
+// Fonction pour lire les Raspberry Pi depuis le fichier JSON
+const readRaspberryPis = () => {
+  const data = fs.readFileSync(path.join(__dirname, '../public/JSON/raspberryPis.json'));
+  return JSON.parse(data);
+};
+
+// Fonction pour écrire les Raspberry Pi dans le fichier JSON
+const writeRaspberryPis = (raspberryPis) => {
+  fs.writeFileSync(path.join(__dirname, '../public/JSON/raspberryPis.json'), JSON.stringify(raspberryPis, null, 2));
+};
+
 // Route pour le tableau de bord
-app.get("/dashboard", (req, res) => {
+app.get("/dashboard", async (req, res) => {
   if (req.session.admin) {
-    const raspberryPis = [
-      {
-        ip: '192.168.1.101',
-        status: 'Active',
-        isActive: true,
-        isInactive: false,
-        image: '/images/raspberry_pi.png'
-      },
-      {
-        ip: '192.168.1.102',
-        status: 'Inactive',
-        isActive: false,
-        isInactive: true,
-        image: '/images/raspberry_pi.png'
-      },
-      {
-        ip: '192.168.1.103',
-        status: 'Active',
-        isActive: true,
-        isInactive: false,
-        image: '/images/raspberry_pi.png'
+    const raspberryPis = readRaspberryPis();
+
+    const checkStatus = async (raspberryPi) => {
+      try {
+        const res = await ping.promise.probe(raspberryPi.ip);
+        raspberryPi.status = res.alive ? 'Active' : 'Inactive';
+        raspberryPi.isActive = res.alive;
+        raspberryPi.isInactive = !res.alive;
+      } catch (error) {
+        raspberryPi.status = 'Inactive';
+        raspberryPi.isActive = false;
+        raspberryPi.isInactive = true;
       }
-    ];
+    };
+
+    await Promise.all(raspberryPis.map(checkStatus));
+
     res.render("dashboard", { 
       title: "Dashboard", 
       username: req.session.admin.username,
       raspberryPis: raspberryPis // Passez les données des Raspberry Pi à la vue
     });
+  } else {
+    res.redirect("/");
+  }
+});
+
+// Route pour la configuration d'un Raspberry Pi existant
+app.get("/configure/:id", (req, res) => {
+  if (req.session.admin) {
+    const raspberryPis = readRaspberryPis();
+    const raspberryPi = raspberryPis.find(pi => pi.id === parseInt(req.params.id));
+    if (raspberryPi) {
+      res.render("configure", { 
+        title: "Configure Raspberry Pi",
+        id: raspberryPi.id,
+        ip: raspberryPi.ip
+      });
+    } else {
+      res.redirect("/dashboard");
+    }
   } else {
     res.redirect("/");
   }
@@ -106,18 +132,6 @@ app.get("/configure", (req, res) => {
   }
 });
 
-// Route pour la configuration d'un Raspberry Pi existant
-app.get("/configure/:ip", (req, res) => {
-  if (req.session.admin) {
-    res.render("configure", { 
-      title: "Configure Raspberry Pi",
-      ip: req.params.ip
-    });
-  } else {
-    res.redirect("/");
-  }
-});
-// Route pour le formulaire de configuration d'un  nouveau Raspberry Pi 
 app.post("/configure", async (req, res) => {
   if (!req.session.admin) {
     return res.redirect("/");
@@ -134,29 +148,52 @@ app.post("/configure", async (req, res) => {
     });
 
     // Transfer files
-    await ssh.putFile(path.join(__dirname, 'player.py'), '/home/admin/project/player.py');
-    await ssh.putFile(path.join(__dirname, 'run_player.sh'), '/home/admin/run_player.sh');
-    await ssh.putFile(path.join(__dirname, 'setup_display.sh'), '/home/admin/setup_display.sh');
+    // await ssh.putFile(path.join(__dirname, '../public/scripts/player.py'), '/home/admin/project/player.py');
+    // await ssh.putFile(path.join(__dirname, '../public/scripts/display_media.sh'), '/home/admin/display_media.sh');
+    // await ssh.putFile(path.join(__dirname, '../public/scripts/setup_display.sh'), '/home/admin/setup_display.sh');
 
     // Execute setup script
-    const result = await ssh.execCommand('sudo bash /home/admin/setup_display.sh');
-    ssh.dispose();
+    // const result = await ssh.execCommand('sudo bash /home/admin/setup_display.sh');
+    // ssh.dispose();
 
-    res.render("result", { title: "Configuration Result", output: result.stdout, error: result.stderr });
+    // Lire les Raspberry Pi actuels
+    const raspberryPis = readRaspberryPis();
+
+    // Ajouter le nouveau Raspberry Pi avec un identifiant unique
+    const newId = raspberryPis.length > 0 ? raspberryPis[raspberryPis.length - 1].id + 1 : 1;
+    raspberryPis.push({
+      id: newId,
+      ip: ip_address,
+      status: 'Pending', // Initial status before ping
+      isActive: false,
+      isInactive: true,
+      image: '/images/raspberry_pi.png'
+    });
+
+    // Écrire les Raspberry Pi mis à jour dans le fichier JSON
+    writeRaspberryPis(raspberryPis);
+
+    // Rediriger vers le tableau de bord
+    res.redirect("/dashboard");
   } catch (error) {
     res.render("result", { title: "Configuration Result", output: "", error: error.message });
   }
 });
 
-
-
 // Route pour gérer un Raspberry Pi
-app.get("/manage/:ip", (req, res) => {
+app.get("/manage/:id", (req, res) => {
   if (req.session.admin) {
-    res.render("manage", { 
-      title: "Manage Raspberry Pi",
-      ip: req.params.ip
-    });
+    const raspberryPis = readRaspberryPis();
+    const raspberryPi = raspberryPis.find(pi => pi.id === parseInt(req.params.id));
+    if (raspberryPi) {
+      res.render("manage", { 
+        title: "Manage Raspberry Pi",
+        id: raspberryPi.id,
+        ip: raspberryPi.ip
+      });
+    } else {
+      res.redirect("/dashboard");
+    }
   } else {
     res.redirect("/");
   }

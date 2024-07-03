@@ -5,7 +5,6 @@
     <h1 class="dashboard-title">Tableau de Bord</h1>
     <p>Bienvenue, {{username}} !</p>
     <!-- <a href="/configure" class="btn btn-primary">Configurer un nouveau Raspberry Pi</a> -->
-    <!-- <a href="/logout" class="btn btn-secondary">Déconnexion</a> -->
   </section>
 
   <section class="mt-5">
@@ -21,8 +20,8 @@
               {{#isActive}}<span class="status-active">{{status}}</span>{{/isActive}}
               {{#isInactive}}<span class="status-inactive">{{status}}</span>{{/isInactive}}
             </p>
-            <a href="/configure/{{ip}}" class="btn btn-primary">Configurer</a>
-            <a href="/manage/{{ip}}" class="btn btn-secondary">Gérer</a>
+            <a href="/configure/{{id}}" class="btn btn-primary">Configurer</a>
+            <a href="/manage/{{id}}" class="btn btn-secondary">Gérer</a>
           </div>
         </div>
       </div>

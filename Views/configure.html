@@ -9,6 +9,7 @@
         </div>
         <div class="card-body">
           <form action="/configure" method="post">
+            <input type="hidden" name="id" value="{{id}}">
             <div class="form-group">
               <label for="ip_address">Adresse IP du Raspberry Pi:</label>
               <input type="text" class="form-control" id="ip_address" name="ip_address" value="{{ip}}" required>
